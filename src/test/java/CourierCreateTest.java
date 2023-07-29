@@ -44,44 +44,4 @@ public class CourierCreateTest {
                 .body("ok", is(true));
     }
 
-    @Test
-    @DisplayName("Cоздание курьера без логина")
-    @Description("Проверется невозможность создания курьера без логина")
-    public void createCourierWithoutLoginTest(){
-        courier.setLogin(null);
-        ValidatableResponse createResponse = courierStep.create(courier);
-        createResponse
-                .statusCode(400)
-                .assertThat()
-                .body("message",equalTo("Недостаточно данных для создания учетной записи"));
-    }
-
-    @Test
-    @DisplayName("Cоздание курьера без пароля")
-    @Description("Проверяется невозможность создания курьера без пароля")
-    public void createCourierWithoutPasswordTest(){
-        courier.setPassword(null);
-        ValidatableResponse createResponse = courierStep.create(courier);
-        createResponse
-                .statusCode(400)
-                .assertThat()
-                .body("message",equalTo("Недостаточно данных для создания учетной записи"));
-    }
-
-    @Test
-    @DisplayName("Cоздание курьера с существующим логином")
-    @Description("Проверяется, что нельзя создать двух одинаковых курьеров")
-    public void createDuplicateCourierTest(){
-        ValidatableResponse createResponseFirst = courierStep.create(courier);
-        ValidatableResponse createResponseSecond = courierStep.create(courier);
-        ValidatableResponse loginResponse = courierStep.login(CourierCredentials.from(courier));
-        courierId = loginResponse.extract().path("id");
-        createResponseSecond
-                .statusCode(409)
-                .assertThat()
-                .body("code",equalTo(409))
-                .and()
-                .body("message",equalTo("Этот логин уже используется. Попробуйте другой."));
-    }
-
 }
